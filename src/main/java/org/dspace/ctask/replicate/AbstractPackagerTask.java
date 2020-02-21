@@ -86,19 +86,20 @@ public abstract class AbstractPackagerTask extends AbstractCurationTask
             {
                 log.info("*** Parameter Property: " + property);
 
-                //Remove leading module name (if applicable)
-                if(property.startsWith(moduleName + ".")) {
-                    property = property.replaceFirst(moduleName + ".", "");
-                    log.info("*** Property name reset to: " + property);
+                //Set propertyName, removing leading module name (if applicable)
+                String propertyName = property;
+                if(propertyName.startsWith(moduleName + ".")) {
+                    propertyName = property.replaceFirst(moduleName + ".", "");
+                    log.info("*** Property name reset to: " + propertyName);
                 }
 
                 //Only obey the setting(s) beginning with this task's ID/name,
-                if(property.startsWith(this.taskId))
+                if(propertyName.startsWith(this.taskId))
                 {
-                    log.info("*** Property " + property + " does start with " + this.taskId);
+                    log.info("*** Property name " + propertyName + " does start with " + this.taskId);
 
                     //Parse out the option name by removing the "[taskID]." from beginning of property
-                    String option = property.replace(taskId + ".", "");
+                    String option = propertyName.replace(taskId + ".", "");
                     String value = configurationService.getProperty(property);
 
                     log.info("*** Option: " + option + " Value: " + value);
