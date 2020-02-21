@@ -43,23 +43,23 @@ public abstract class AbstractPackagerTask extends AbstractCurationTask
      * These PackageParameters should be configured using the following
      * configuration file format:
      * <p>
-     * SETTING FORMAT: [taskname].[option] = [value]
+     * SETTING FORMAT: [modulename].[taskname].[option] = [value]
      * <p>
      * Valid 'options' include all packager options supported by the
      * Packager class, e.g. AIP packagers minimally support these options:
-     * https://wiki.duraspace.org/display/DSDOC18/AIP+Backup+and+Restore#AIPBackupandRestore-AdditionalPackagerOptions
+     * https://wiki.lyrasis.org/display/DSDOC6x/AIP+Backup+and+Restore#AIPBackupandRestore-AdditionalPackagerOptions
      * <p>
      * Please note that different Packager classes will support different options.
      * You should determine which options are valid for your Packager class
      * and the curation task that utilizes it.
      * <p>
-     * Example usage: if your curation task is named "myreplacetask" in curate.cfg,
-     * then you can configure its PackageParameters like so:
+     * Example usage: if your module is named "mymodule" and your curation task is  named
+     * "myreplacetask" in curate.cfg, then you can configure its PackageParameters like so:
      * <p>
-     * myreplacetask.replaceMode = true
-     * myreplacetask.recursiveMode = true
-     * myreplacetask.createMetadataFields = true
-     * myreplacetask.[any-supported-option] = [any-supported-value]
+     * mymodule.myreplacetask.replaceMode = true
+     * mymodule.myreplacetask.recursiveMode = true
+     * mymodule.myreplacetask.createMetadataFields = true
+     * mymodule.myreplacetask.[any-supported-option] = [any-supported-value]
      *
      * @param moduleName Module name to load configuration file and settings from
      * @return configured PackageParameters (or null, if configurations not found)
@@ -85,6 +85,12 @@ public abstract class AbstractPackagerTask extends AbstractCurationTask
             for(String property : moduleProps)
             {
                 log.info("*** Parameter Property: " + property);
+
+                //Remove leading module name (if applicable)
+                if(property.startsWith(moduleName + ".")) {
+                    property = property.replaceFirst(moduleName + ".", "");
+                    log.info("*** Property name reset to: " + property);
+                }
 
                 //Only obey the setting(s) beginning with this task's ID/name,
                 if(property.startsWith(this.taskId))
